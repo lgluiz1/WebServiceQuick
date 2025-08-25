@@ -17,11 +17,6 @@ urlpatterns = [
     # Redireciona raiz para /api/docs
     path('', lambda request: redirect('/api/docs/')),
 
-
-    # JWT auth
-    path("api/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
-    path("api/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
-
     # JWT auth
     #path('api/token/', obtain_auth_token, name='api_token_auth'),
 
