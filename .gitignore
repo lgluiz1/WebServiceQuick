@@ -31,7 +31,7 @@ wheels/
 *.sqlite3
 db.sqlite3
 media/
-staticfiles/
+#staticfiles/
 *.mo
 
 # Django secret keys / env
