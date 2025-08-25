@@ -32,3 +32,16 @@ class NotaFiscal(models.Model):
 
     def __str__(self):
         return f"NFe {self.numero} - {self.status} - {self.data_emissao.strftime('%d/%m/%Y')}"
+
+
+class IntegracaoSenac(models.Model):
+    status = models.BooleanField(default=False)
+    id_nota_fiscal = models.CharField(max_length=20, unique=True)
+    dados = models.JSONField()
+
+    class Meta:
+        verbose_name = 'Integração Senac'
+        verbose_name_plural = 'Integrações Senac'
+
+    def __str__(self):
+        return f"Integração Senac - {self.id_nota_fiscal} - {'Processado' if self.status else 'Não processado'}"

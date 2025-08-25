@@ -26,4 +26,8 @@ urlpatterns = [
 
     # APIs
     path("api/webhooks/", include("webhooks.urls")),
+    path("api/webponto/", include("webponto.urls")),
+    path("api/notafiscal/", include("notafiscal.urls")),
+    path("api/integracoes/", include("integracoes.urls")),
+
 ]
