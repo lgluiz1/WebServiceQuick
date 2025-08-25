@@ -1,1 +1,1 @@
-web: gunicorn WebServiceQuick.wsgi
+web: gunicorn core.wsgi
