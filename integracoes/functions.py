@@ -5,11 +5,6 @@ import urllib3
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 def envia_para_senac_soap(dado):
-    """
-    Envia um único registro de entrega para o WebService SOAP do Senac.
-    
-    dado: dicionário contendo os campos da carga
-    """
 
     url = "https://www.editorasenacsp.com.br/ms/sapiens_Asyncbr_senac_sp_eds_ven_confirmacaoentrega"
 

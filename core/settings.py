@@ -39,6 +39,7 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
+    'jazzmin',
     # apps padrões do Django
     "django.contrib.admin",
     "django.contrib.auth",
@@ -52,6 +53,8 @@ INSTALLED_APPS = [
     "drf_spectacular",
     "drf_spectacular_sidecar",
     'rest_framework.authtoken',
+    'django_celery_results',
+    'django_celery_beat',
 
     # Nossos apps
     'usuarios',
@@ -161,7 +164,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'pt-br'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/Sao_Paulo'
 
 USE_I18N = True
 
@@ -188,3 +191,8 @@ EMAIL_HOST_USER = "naorespondertest@gmail.com"
 EMAIL_HOST_PASSWORD = "98693021.Lg"
 DEFAULT_FROM_EMAIL = "naorespondertest@gmail.com" 
 
+
+
+CELERY_BROKER_URL = 'amqps://digfweqw:80kdo21k3imr3a4NfW08tbNZ6FFv0cIB@jackal.rmq.cloudamqp.com/digfweqw'
+CELERY_TIMEZONE = 'America/Sao_Paulo'
+CELERY_RESULT_BACKEND = 'django-db'

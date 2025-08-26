@@ -1,5 +1,5 @@
 from django.http import JsonResponse
-from .functions import obter_dados_notas_fiscais
+from .functions import obter_dados_notas_fiscais, processar_dados_senac
 from webhooks.models import NfeWebhook
 from .models import IntegracaoSenac
 from datetime import datetime
