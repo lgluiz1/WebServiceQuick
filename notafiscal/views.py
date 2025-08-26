@@ -21,7 +21,7 @@ def buscar_dados(request):
         )
 
     # Retorna os dados como JSON
-    return JsonResponse(dados, safe=False)
+    return JsonResponse("Dados enviados com sucesso", safe=False)
 
 def processar_dados_senac(request):
     # Pega registros NfeWebhook com status False
@@ -43,7 +43,7 @@ def processar_dados_senac(request):
                         "dados": item
                     }
                 )
-                
+
             # Se já existia, apenas ignora
             if criado:
                 print(f"Nota fiscal {id_nota_fiscal} criada.")
