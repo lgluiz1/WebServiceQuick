@@ -36,12 +36,14 @@ class NotaFiscal(models.Model):
 
 class IntegracaoSenac(models.Model):
     status = models.BooleanField(default=False)
-    id_nota_fiscal = models.CharField(max_length=20, unique=True)
+    id_nota_fiscal = models.CharField(max_length=20,null=True,blank=True)
+    chave_nfe = models.CharField(max_length=250, unique=True)
     dados = models.JSONField()
+    erro = models.TextField(blank=True, null=True)
 
     class Meta:
-        verbose_name = 'Integração Senac'
-        verbose_name_plural = 'Integrações Senac'
+        verbose_name = 'NF-e Integração Senac'
+        verbose_name_plural = 'NF-es Integrações Senac'
 
     def __str__(self):
-        return f"Integração Senac - {self.id_nota_fiscal} - {'Processado' if self.status else 'Não processado'}"
+        return f"Senac - Nota Fiscal {self.id_nota_fiscal} Chave {self.chave_nfe[:5]} - {'Enviada' if self.status else 'Não Enviada'}"

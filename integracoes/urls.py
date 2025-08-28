@@ -3,5 +3,5 @@ from django.urls import path
 from .views import integracao_senac
 
 urlpatterns = [
-   path("integracao/senac/", integracao_senac, name="integracao_senac"),
+   path("envio/senac/", integracao_senac, name="integracao_senac"),
 ]

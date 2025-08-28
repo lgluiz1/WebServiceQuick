@@ -5,7 +5,6 @@ from django.http import JsonResponse
 from time import sleep
 
 def integracao_senac(request):
-    # Buscar todas as integrações que ainda não foram processadas
     integracoes = IntegracaoSenac.objects.filter(status=False)
 
     if not integracoes.exists():
@@ -20,21 +19,27 @@ def integracao_senac(request):
             status_code, resposta = envia_para_senac_soap(integracao.dados)
 
             if status_code == 200:
-                # Marca como processada se envio for bem-sucedido
+                # ✅ sucesso → marca como processada e zera o erro
                 integracao.status = True
+                integracao.erro = None
                 integracao.save()
                 sucesso += 1
-                sleep(5)
             else:
-                # Caso o envio falhe, adiciona na lista de falhas
+                # ❌ falha → mantém status=False e salva erro
+                integracao.erro = f"Falha no envio: {status_code} - {resposta}"
+                integracao.save()
                 falhas.append({
                     "id": integracao.id,
                     "status_code": status_code,
                     "resposta": resposta
                 })
-                sleep(5)
+
+            sleep(5)
 
         except Exception as e:
+            # ❌ erro inesperado
+            integracao.erro = f"Exceção: {str(e)}"
+            integracao.save()
             falhas.append({
                 "id": integracao.id,
                 "erro": str(e)
