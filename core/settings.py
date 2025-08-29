@@ -193,6 +193,58 @@ DEFAULT_FROM_EMAIL = "naorespondertest@gmail.com"
 
 
 
-CELERY_BROKER_URL = 'amqps://digfweqw:80kdo21k3imr3a4NfW08tbNZ6FFv0cIB@jackal.rmq.cloudamqp.com/digfweqw'
+
+# URL do RabbitMQ (definida no docker-compose)
+CELERY_BROKER_URL = config("CELERY_BROKER_URL", default="amqp://guest:guest@localhost:5672//")
+
+CELERY_RESULT_BACKEND = config("CELERY_RESULT_BACKEND", default="django-db")
+
 CELERY_TIMEZONE = 'America/Sao_Paulo'
 CELERY_RESULT_BACKEND = 'django-db'
+
+# Scheduler do Celery Beat (usando o django-celery-beat)
+CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
+
+
+
+
+JAZZMIN_SETTINGS = {
+    "site_title": "Sistema QuickDelivery",
+    "site_header": "QuickDelivery",
+    "site_brand": "QuickDelivery",  # Caminho relativo à pasta static
+    "login_logo": "images/logo.jpg",  # Logo na tela de login
+    "site_icon": "images/favicon-16x16.png",  # Ícone da aba do navegador
+    "welcome_sign": "Sistema Adiministrativo da QuickDelivery",
+    "copyright": "QuickDelivery © 2025",
+
+    
+"icons": {
+        "auth.User": "fas fa-user",
+        "groups.Group": "fas fa-users",
+        "entregas.Pedido": "fas fa-box",
+        "usuarios.Cliente": "fas fa-user-tag",
+        "financeiro.Fatura": "fas fa-file-invoice-dollar",
+    },
+
+"side_menu": [
+        {
+            "app": "integracoes",
+            "label": "Servico Senac",
+            "icon": "fas fa-truck",
+            "models": ["notafiscal.IntegracaoSenac"]
+        },
+        {
+            "app": "usuarios",
+            "label": "Usuários",
+            "icon": "fas fa-users",
+            "models": ["usuarios.Cliente"]
+        },
+        {
+            "app": "financeiro",
+            "label": "Financeiro",
+            "icon": "fas fa-money-bill-wave",
+            "models": ["financeiro.Fatura"]
+        },
+    ]
+
+}

@@ -6,25 +6,14 @@ from datetime import datetime
 from django.http import JsonResponse
 from time import sleep
 from integracoes.functions import envia_para_senac_soap
+from .tasks import buscar_dados_task
 
 def buscar_dados(request):
-    hoje_dia = datetime.now()
-    hoje_str = hoje_dia.strftime("%Y%m%d")
-
-    dados = obter_dados_notas_fiscais()
-
-    # Cria um objeto NfeWebhook para cada dado encontrado
-    
-    NfeWebhook.objects.create(
-        numero_nfe=hoje_str,
-        recebido_em=hoje_dia,
-        processado=False,
-        erro=None,
-        payload=dados
-        )
-
-    # Retorna os dados como JSON
-    return JsonResponse("Dados enviados com sucesso", safe=False)
+    task = buscar_dados_task.delay()  # dispara async
+    return JsonResponse({
+        "status": "task enviada",
+        "task_id": task.id
+    })
 
 def processar_notas_senac(request):
     nfe_webhooks = NfeWebhook.objects.filter(processado=False)

@@ -9,6 +9,10 @@ from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 from rest_framework.authtoken.views import obtain_auth_token
 from drf_spectacular.views import SpectacularSwaggerView
 
+from django.conf import settings
+from django.conf.urls.static import static
+
+
 
 
 urlpatterns = [
@@ -28,6 +32,8 @@ urlpatterns = [
     path("api/webhooks/", include("webhooks.urls")),
     path("api/webponto/", include("webponto.urls")),
     path("api/notafiscal/", include("notafiscal.urls")),
-    path("api/integracoes/", include("integracoes.urls")),
+    #path("api/integracoes/", include("integracoes.urls")),
+
 
 ]
+urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
