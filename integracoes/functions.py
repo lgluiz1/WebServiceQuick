@@ -1,7 +1,7 @@
 import requests
 import urllib3
 from datetime import datetime
-
+from django.core.mail import send_mail as django_send_mail
 
 # Suprimir aviso de SSL
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
@@ -71,3 +71,17 @@ def envia_para_senac_soap(dado):
         return response.status_code, response.text
     except Exception as e:
         return 500, f"Erro de conexão: {str(e)}"
+
+
+
+def enviar_email(assunto, resultado):    
+    django_send_mail(
+        subject=assunto,
+        message=resultado,
+        from_email='naorespondertest@gmail.com',
+        recipient_list=['legalhints@gmail.com'],
+        fail_silently=False,
+    )
+
+    return (200, "Email enviado com sucesso")
+

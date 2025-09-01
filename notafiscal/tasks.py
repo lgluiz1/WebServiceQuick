@@ -2,6 +2,7 @@ from celery import shared_task, chain
 from .functions import processar_dados_senac , obter_dados_notas_fiscais
 from webhooks.models import NfeWebhook
 from .models import NotaFiscal , IntegracaoSenac
+from integracoes.functions import enviar_email
 from datetime import datetime
 import time
 
@@ -24,6 +25,10 @@ def buscar_dados_task():
         erro=None,
         payload=dados
     )
+    # Data do buscar
+    titulo_email = f"Busca de notas fiscais DataExport ESL {hoje_dia.strftime('%d/%m/%Y')}"
+    email_mensagem = f"Busca de notas fiscais DataExport ESL concluida com sucesso."
+    enviar_email(titulo_email, email_mensagem) 
 
     return "Dados buscados com sucesso!"
 
@@ -65,6 +70,10 @@ def processar_notas_task():
 
         nfe_webhook.processado = True
         nfe_webhook.save()
+
+    titulo_email = "Processamento Notas Senac"
+    email_mensagem = f"✅ Processado {novas_notas_fiscais} notas fiscais. {notas_repetidas} notas fiscais repetidas."
+    enviar_email(titulo_email, email_mensagem)    
 
     return {
         "novas_notas_fiscais": novas_notas_fiscais,
@@ -120,6 +129,10 @@ def processar_notas_senac_task():
         # Marca NfeWebhook como processado
         nfe_webhook.processado = True
         nfe_webhook.save()
+
+    titulo_email = "Envio Feito para senac"
+    email_mensagem = f"✅ Processado {novas_notas_fiscais} notas fiscais. {notas_repetidas} notas fiscais repetidas."
+    enviar_email(titulo_email, email_mensagem)
 
     return {
         "novas_notas_fiscais": novas_notas_fiscais,
