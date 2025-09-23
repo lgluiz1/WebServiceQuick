@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 from pathlib import Path
 import environ
+from dotenv import load_dotenv
 import os
 
 
@@ -126,7 +127,7 @@ WSGI_APPLICATION = 'core.wsgi.application'
 }
 """
 from decouple import config
-DATABASES = {
+"""DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': config('DB_NAME'),
@@ -137,6 +138,21 @@ DATABASES = {
         "OPTIONS": {
             "charset": "utf8mb4",
             "use_unicode": True,
+        },
+    }
+}"""
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'mssql',
+        'NAME': os.getenv('DB_NAME_SQL'),
+        'USER': os.getenv('DB_USER_SQL'),
+        'PASSWORD': os.getenv('DB_PASSWORD_SQL'),
+        'HOST': os.getenv('DB_HOST_SQL'),
+        'PORT': os.getenv('DB_PORT_SQL', '1433'),
+        'OPTIONS': {
+            'driver': os.getenv('DB_DRIVER_SQL'),
+            'extra_params': f'INSTANCE={os.getenv("DB_INSTANCE_SQL")}'
         },
     }
 }

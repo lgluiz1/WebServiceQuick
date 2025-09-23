@@ -1,51 +1,54 @@
-
+version: '3.9'
 
 services:
-  web:
+  web_test:
     build: .
-    container_name: django_app
-    command: gunicorn core.wsgi:application --bind 0.0.0.0:8000
+    container_name: django_app_test
+    command: sh -c "python manage.py makemigrations && python manage.py migrate && gunicorn core.wsgi:application --bind 0.0.0.0:8000 --workers 3 --timeout 120"
     volumes:
       - .:/app
     ports:
-      - "8000:8000"
+      - "8001:8000"  # Django externo 8001 → interno 8000
     env_file: 
-      - .env
+      - .env_test  # Use um .env separado com banco de teste
     depends_on:
-      rabbitmq:
+      rabbitmq_test:
         condition: service_started
 
-  rabbitmq:
+  rabbitmq_test:
     image: rabbitmq:3-management
+    container_name: rabbitmq_test
     ports:
-      - "15672:15672"
-      - "5672:5672"
+      - "15673:15672"  # web management
+      - "5673:5672"    # comunicação RabbitMQ
     volumes:
-      - rabbitmq_data:/var/lib/rabbitmq
+      - rabbitmq_data_test:/var/lib/rabbitmq
 
-  celery:
+  celery_test:
     build: .
+    container_name: celery_test
     command: celery -A core worker -l info
     restart: always
     volumes:
       - .:/app
     env_file: 
-      - .env
+      - .env_test
     depends_on:
-      rabbitmq:
+      rabbitmq_test:
         condition: service_started
 
-  celery-beat:
+  celery-beat_test:
     build: .
+    container_name: celery_beat_test
     command: celery -A core beat -l INFO --scheduler django_celery_beat.schedulers:DatabaseScheduler
     restart: always
     volumes:
       - .:/app
     env_file: 
-      - .env
+      - .env_test
     depends_on:
-      rabbitmq:
+      rabbitmq_test:
         condition: service_started
 
 volumes:
-  rabbitmq_data:
+  rabbitmq_data_test:
