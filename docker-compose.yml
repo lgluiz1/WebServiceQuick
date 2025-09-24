@@ -29,6 +29,8 @@ services:
       - .:/app
     env_file: 
       - .env
+    environment:
+      - TZ=America/Sao_Paulo
     depends_on:
       rabbitmq:
         condition: service_started
@@ -42,6 +44,8 @@ services:
       - celery_beat_data:/app/celerybeat-data  # persistência do arquivo SQLite
     env_file: 
       - .env
+    environment:
+      - TZ=America/Sao_Paulo
     depends_on:
       rabbitmq:
         condition: service_started

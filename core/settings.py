@@ -215,7 +215,7 @@ CELERY_RESULT_BACKEND = config("CELERY_RESULT_BACKEND", default="django-db")
 
 # Timezone
 CELERY_TIMEZONE = 'America/Sao_Paulo'
-
+CELERY_ENABLE_UTC = True
 # Scheduler do Celery Beat usando arquivo SQLite persistente
 CELERY_BEAT_SCHEDULER = 'celery.beat.PersistentScheduler'
 CELERY_BEAT_SCHEDULE_FILENAME = '/app/celerybeat-data/celerybeat-schedule.db'
