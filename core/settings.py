@@ -153,8 +153,13 @@ DATABASES = {
             'driver': os.getenv('DB_DRIVER_SQL'),
             'extra_params': f'INSTANCE={os.getenv("DB_INSTANCE_SQL")}'
         },
+    },
+    'celerybeat': {  # SQLite para agendamentos
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / "celerybeat.sqlite3",
     }
 }
+
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
 
@@ -217,6 +222,7 @@ CELERY_ENABLE_UTC = True
 CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
 
 
+DATABASE_ROUTERS = ['core.db_routers.CeleryBeatRouter']
 
 
 JAZZMIN_SETTINGS = {
