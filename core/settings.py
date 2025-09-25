@@ -207,18 +207,15 @@ DEFAULT_FROM_EMAIL = "naorespondertest@gmail.com"
 
 
 
-# URL do RabbitMQ (broker)
-CELERY_BROKER_URL = config("CELERY_BROKER_URL", default="amqp://guest:guest@rabbitmq:5672//")
+CELERY_BROKER_URL = os.getenv("CELERY_BROKER_URL")
+CELERY_RESULT_BACKEND = os.getenv("CELERY_RESULT_BACKEND")
 
-# Backend para resultados
-CELERY_RESULT_BACKEND = config("CELERY_RESULT_BACKEND", default="django-db")
-
-# Timezone
 CELERY_TIMEZONE = 'America/Sao_Paulo'
 CELERY_ENABLE_UTC = True
-# Scheduler do Celery Beat usando arquivo SQLite persistente
-CELERY_BEAT_SCHEDULER = 'celery.beat.PersistentScheduler'
-CELERY_BEAT_SCHEDULE_FILENAME = '/app/celerybeat-data/celerybeat-schedule.db'
+
+# Use o scheduler do django-celery-beat
+CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
+
 
 
 

@@ -12,6 +12,8 @@ services:
     depends_on:
       rabbitmq:
         condition: service_started
+      redis:
+        condition: service_started
 
   rabbitmq:
     image: rabbitmq:3-management
@@ -20,6 +22,13 @@ services:
       - "5672:5672"    # conexão Celery
     volumes:
       - rabbitmq_data:/var/lib/rabbitmq
+
+  redis:
+    image: redis:7
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
 
   celery:
     build: .
@@ -34,14 +43,15 @@ services:
     depends_on:
       rabbitmq:
         condition: service_started
+      redis:
+        condition: service_started
 
   celery-beat:
     build: .
-    command: celery -A core beat -l INFO
+    command: celery -A core beat -l info
     restart: always
     volumes:
       - .:/app
-      - celery_beat_data:/app/celerybeat-data  # persistência do arquivo SQLite
     env_file: 
       - .env
     environment:
@@ -49,7 +59,9 @@ services:
     depends_on:
       rabbitmq:
         condition: service_started
+      redis:
+        condition: service_started
 
 volumes:
   rabbitmq_data:
-  celery_beat_data:
+  redis_data:
