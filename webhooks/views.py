@@ -276,7 +276,7 @@ class ReceberWebhookManifestoAPIView(APIView):
                     manifesto_numero=request.data.get("manifesto_numero"),
                     payload=request.data,
                 )
-                processar_manifesto.delay(id)  # envia para fila Celery
+                processar_manifesto.delay(manifesto.id)  # envia para fila Celery
                 return Response(
                     {"message": "Webhook recebido com sucesso!", "id": manifesto.id},
                     status=200,
