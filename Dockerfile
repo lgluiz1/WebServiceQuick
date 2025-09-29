@@ -33,8 +33,13 @@ COPY . /app
 # Instalar dependências Python
 RUN pip install --upgrade pip && pip install -r requirements.txt
 
+# Rodar Django + migrações + Gunicorn
+# Copiar entrypoint
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
 # Expõe porta
 EXPOSE 5000
 
-# Rodar Django + migrações + Gunicorn
-CMD ["sh", "-c", "python manage.py makemigrations && python manage.py migrate && gunicorn core.wsgi:application --bind 0.0.0.0:5000 --workers 3 --timeout 120"]
+# Rodar entrypoint
+CMD ["/entrypoint.sh"]
