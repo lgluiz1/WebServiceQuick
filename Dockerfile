@@ -34,7 +34,7 @@ COPY . /app
 RUN pip install --upgrade pip && pip install -r requirements.txt
 
 # Expõe porta
-EXPOSE 8000
+EXPOSE 5000
 
 # Rodar Django + migrações + Gunicorn
-CMD ["sh", "-c", "python manage.py makemigrations && python manage.py migrate && gunicorn core.wsgi:application --bind 0.0.0.0:8000 --workers 3 --timeout 120"]
+CMD ["sh", "-c", "python manage.py makemigrations && python manage.py migrate && gunicorn core.wsgi:application --bind 0.0.0.0:5000 --workers 3 --timeout 120"]
