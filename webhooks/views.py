@@ -7,6 +7,7 @@ from drf_spectacular.views import SpectacularAPIView
 from django.utils import timezone
 from .models import FretesWebhook , NfeWebhook, ManifestoWebhook
 from .serializers import FreteWebhookSerializer, NfeSenacWebhookSerializer, ManifestoWebhookSerializer
+from .tasks import processar_manifesto
 
 
 class ReceberWebhookAPIView(APIView):
@@ -275,6 +276,7 @@ class ReceberWebhookManifestoAPIView(APIView):
                     manifesto_numero=request.data.get("manifesto_numero"),
                     payload=request.data,
                 )
+                processar_manifesto.delay(id)  # envia para fila Celery
                 return Response(
                     {"message": "Webhook recebido com sucesso!", "id": manifesto.id},
                     status=200,
