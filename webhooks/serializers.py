@@ -71,7 +71,7 @@ class NfeSenacWebhookSerializer(serializers.Serializer):
 
 
 class ManifestoWebhookSerializer(serializers.Serializer):
-    frete_id = serializers.CharField()
+    manifesto_numero = serializers.CharField()
     dados = serializers.JSONField()
 
     class Meta:
