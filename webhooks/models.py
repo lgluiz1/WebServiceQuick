@@ -40,7 +40,7 @@ class ManifestoWebhook(models.Model):
     payload = models.JSONField()
 
     def __str__(self):
-        return f"{self.manifesto_id} - {self.recebido_em.strftime('%d/%m/%Y %H:%M')} - {'Processado' if self.processado else ' Não processado'}, {self.processado_em.strftime('%d/%m/%Y %H:%M') if self.processado_em else 'Não processado'}"
+        return f"{self.manifesto_numero} - {self.recebido_em.strftime('%d/%m/%Y %H:%M')} - {'Processado' if self.processado else ' Não processado'}, {self.processado_em.strftime('%d/%m/%Y %H:%M') if self.processado_em else 'Não processado'}"
     
     class Meta:
         verbose_name = "Manifesto" 
