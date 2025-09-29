@@ -5,8 +5,8 @@ from rest_framework.permissions import IsAuthenticated , IsAdminUser
 from rest_framework.authentication import TokenAuthentication
 from drf_spectacular.views import SpectacularAPIView
 from django.utils import timezone
-from .models import FretesWebhook , NfeWebhook
-from .serializers import FreteWebhookSerializer, NfeSenacWebhookSerializer
+from .models import FretesWebhook , NfeWebhook, ManifestoWebhook
+from .serializers import FreteWebhookSerializer, NfeSenacWebhookSerializer, ManifestoWebhookSerializer
 
 
 class ReceberWebhookAPIView(APIView):
