@@ -13,8 +13,8 @@ class FretesWebhook(models.Model):
 
 
     class Meta:
-        verbose_name = "Frete Webhook"
-        verbose_name_plural = "Fretes Webhooks"
+        verbose_name = "Frete"
+        verbose_name_plural = "Fretes"
 
 
 class NfeWebhook(models.Model):
@@ -28,8 +28,8 @@ class NfeWebhook(models.Model):
         return f"{self.numero_nfe} - {self.recebido_em.strftime('%d/%m/%Y %H:%M')} - {'Processado' if self.processado else ' Não processado'}"
     
     class Meta:
-        verbose_name = "NF-e Webhook" 
-        verbose_name_plural = "NF-e Webhook"
+        verbose_name = "Nota Fiscal" 
+        verbose_name_plural = "Notas Fiscais"
 
 class ManifestoWebhook(models.Model):
     manifesto_numero = models.CharField(max_length=255)
