@@ -1,7 +1,7 @@
 from django.db import models
 
 class Filial(models.Model):
-    documento = models.CharField(max_length=14)
+    documento = models.CharField(max_length=14, unique=True)
     ie = models.CharField(max_length=14)
     nome = models.CharField(max_length=100)
     endereco = models.CharField(max_length=100)
@@ -14,4 +14,4 @@ class Filial(models.Model):
     ultima_atualizacao = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"{self.nome}"
+        return f"{self.nome} "
