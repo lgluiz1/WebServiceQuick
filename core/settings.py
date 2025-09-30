@@ -35,6 +35,10 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
+CSRF_TRUSTED_ORIGINS = [
+    "https://terrilyn-postsurgical-stammeringly.ngrok-free.dev",
+]
+
 
 # Application definition
 
@@ -64,6 +68,7 @@ INSTALLED_APPS = [
     'fretes',
     "notafiscal",
     "manifesto",
+    "filial",
 ]
 
 REST_FRAMEWORK = {
