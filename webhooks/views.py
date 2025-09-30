@@ -23,46 +23,87 @@ class ReceberWebhookAPIView(APIView):
             value={
                 "frete_id": "FRT12345",
                 "dados": {
-                            "frete_id": "FRT12345",
-                            "recebido_em": "2025-08-25T12:00:00Z",
-                            "tipo_frete": "Rodoviário",
-                            "previsao_entrega": "2025-08-30",
-                            "observacoes": "Entrega urgente",
-                            "agente_entrega": "Transportadora XYZ",
-                            "numero_nfe": "123456789",
-                            "serie_nfe": "1",
-                            "chave_nfe": "12345678901234567890123456789012345678901234",
-                            "data_emissao_nfe": "2025-08-20",
-                            "id_nfe": "NFE12345",
-                            "cte_id": "CTE12345",
-                            "cte_numero": "987654321",
-                            "cte_key": "CTEKEY1234567890",
-                            "data_emissao_cte": "2025-08-21",
-                            "minuta_id": "MIN12345",
-                            "minuta_numero": "555666",
-                            "minuta_data_emissao": "2025-08-22",
-                            "doc_remetente": "12345678901",
-                            "nome_remetente": "Empresa Remetente",
-                            "doc_destinatario": "98765432100",
-                            "nome_destinatario": "João Silva",
-                            "cidade_destino": "São Paulo",
-                            "uf_destino": "SP",
-                            "cep_destino": "01000-000",
-                            "endereco_destino": "Rua Exemplo, 100",
-                            "bairro_destino": "Centro",
-                            "tel_destinatario": "11999998888",
-                            "email_destinatario": "joao.silva@email.com",
-                            "manifesto_id": "MAN12345",
-                            "manifesto_numero": "777888",
-                            "manifesto_data_emissao": "2025-08-23",
-                            "motorista": "Carlos Pereira",
-                            "doc_motorista": "12345678900",
-                            "veiculo_placa": "ABC1D23"
+                            "chave": 12345678901234567890123456789012345678901234,
+                            "numero": 000123,
+                            "serie": 1,
+                            "status": [
+                                {
+                                    "codigo": 01,
+                                    "descricao": "Entregue"
+                                },
+                                {
+                                    "codigo": 02,
+                                    "descricao": "Cancelada"
+                                },
+                                {
+                                    "codigo": 03,
+                                    "descricao": "Em trânsito"
+                                },
+                            ],
+                            "filial_emissao":[
+                            {
+                                "documento": 12345678901234,
+                                "ie": 123456789,
+                                "nome": "Empresa XYZ",
+                                "endereco": "Rua Exemplo, 100",
+                                "bairro": "Centro",
+                                "cidade": "São Paulo",
+                                "uf": "SP",
+                                "cep": "01000-000",
+                                }
+                              ],
+                            "data_emissao": "2025-08-25T10:30:00Z",
+                            "data_saida_entrada": "2025-08-25T12:00:00Z",
+                            "tipo_operacao": "fracionado",
+                            "modelo_frete": "Rodoviario",
+                            "valor_total_produtos": 1500.75,
+                            "tipo_servico": "Normal",
+                            "tipo_emissao": "nfe, cte, minuta",
+                            "valor_total_nota": 1600.50,
+                            "peso_total_nota": 25.5,
+                            "origem": [
+                                {   
+                                    "documento": 12345678901234,
+                                    "cidade": "São Paulo",
+                                    "uf": "SP",
+                                    "cep": "01000-000",
+                                    "endereco": "Rua Exemplo, 100",
+                                    "bairro": "Centro",
+                                }
+                            ],
+                            "destino": [
+                                {
+                                    "documento": 98765432109876,
+                                    "nome": "Empresa Destinatária/Cliente Final",
+                                    "cidade": "Rio de Janeiro",
+                                    "uf": "RJ",
+                                    "cep": "20000-000",
+                                    "endereco": "Avenida Exemplo, 200",
+                                    "bairro": "Centro",
+                                    "complemento": "Sala 101",
+                                    "telefone": 11999999999,
+                                    "email": "destinatario@email",
+                                }
+                            ],
+                            "notas_fiscais": [
+                                {
+                                    "chave": "12345678901234567890123456789012345678901234",
+                                    "numero": 000123,
+                                    "serie": 1,
+                                },
+                                {
+                                    "chave": "12345678901234567890123456789012345678901234",
+                                    "numero": 000456,
+                                    "serie": 2,
+                                },
+                            ],
+                            "observacoes": "Entrega via transportadora X",
+                            "url_comprovante": "https://quickdelivery.com/comprovante/000123.pdf"
                         }
 
-            },
-            request_only=True,  # indica que é exemplo para envio
-        )
+                        },
+                        request_only=True,  # indica que é exemplo para envio
+                        )
     ]
 )
     
@@ -99,31 +140,8 @@ class ReceberWebhookNfeAPIView(APIView):
         OpenApiExample(
             'Exemplo de webhook',
             value={
-                "frete_id": "FRT12345",
+                "numero_nfe": 123456,
                 "dados": {
-                            "chave": "12345678901234567890123456789012345678901234",
-                            "numero": "000123",
-                            "serie": "1",
-                            "status": "Finalizada , Cancelada, Em_transporte",
-                            "data_emissao": "2025-08-25T10:30:00Z",
-                            "data_saida_entrada": "2025-08-25T12:00:00Z",
-                            "tipo_operacao": "saída",
-                            "valor_total_produtos": "1500.75",
-                            "valor_total_nota": "1600.50",
-                            "peso_total_nota": "25.5",
-                            "observacoes": "Entrega via transportadora X",
-                            "nome_emitente": "Empresa Emitente LTDA",
-                            "documento_emitente": "12.345.678/0001-90",
-                            "nome_destinatario": "João da Silva",
-                            "documento_destinatario": "123.456.789-00",
-                            "endereco_destinatario": "Rua das Flores, 123",
-                            "bairro_destinatario": "Centro",
-                            "cidade_destinatario": "São Paulo",
-                            "uf_destinatario": "SP",
-                            "cep_destinatario": "01000-000",
-                            "telefone_destinatario": "11999999999",
-                            "email_destinatario": "joao.silva@quickdelivery.com.br",
-                            "url_comprovante": "https://quickdelivery.com/comprovante/000123.pdf"
                         }
 
                         },
@@ -226,30 +244,30 @@ class ReceberWebhookManifestoAPIView(APIView):
                         "ctes": [
                             {
                                 "cte_id": "CTE12345",
+                                "minuta_id": "MIN12345",
                                 "cte_numero": 987654321,
                                 "cte_key": "12345678901234567890123456789012345678901234",
                                 "data_emissao_cte": "2025-08-21",
                             },
                             {
                                 "cte_id": "CTE67890",
+                                "minuta_id": "MIN67890",
                                 "cte_numero": 123456789,
                                 "cte_key": "43210987654321098765432109876543210987654321",
                                 "data_emissao_cte": "2025-08-20",
                             },
                         ],
-                        "notas": [
+                        "filial: [
                             {
-                                "numero_nota": 123456789,
-                                "serie_nota": 1,
-                                "chave_nota": "12345678901234567890123456789012345678901234",
-                                "data_emissao_nota": "2025-08-20",
-                            },
-                            {
-                                "numero_nota": 987654321,
-                                "serie_nota": 2,
-                                "chave_nota": "43210987654321098765432109876543210987654321",
-                                "data_emissao_nota": "2025-08-19",
-                            },
+                                "documento": 12345678901234,
+                                "ie": 123456789,
+                                "nome": "Empresa XYZ",
+                                "endereco": "Rua Exemplo, 100",
+                                "bairro": "Centro",
+                                "cidade": "São Paulo",
+                                "uf": "SP",
+                                "cep": "01000-000",
+                            }
                         ],
                         "motorista": "Carlos Souza",
                         "veiculo_placa": "ABC-1234",
@@ -272,7 +290,7 @@ class ReceberWebhookManifestoAPIView(APIView):
         serializer = ManifestoWebhookSerializer(data=request.data)
         if serializer.is_valid():
             try:
-                manifesto = ManifestoWebhook.objects.create(
+                manifesto = ManifestoWebhook.objects.update_or_create( 
                     manifesto_numero=request.data.get("manifesto_numero"),
                     payload=request.data,
                 )
