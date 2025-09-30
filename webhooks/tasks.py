@@ -4,6 +4,25 @@ from .models import ManifestoWebhook
 from manifesto.models import Manifesto, ManifestoModelo, Descarregamento, Minuta, ResumoNatureza
 from datetime import datetime
 
+
+@shared_task
+def enviar_manifesto(manifesto_id):
+    # Chama requests e cria envio de manifesto
+    import requests
+
+    url = "https://eo3fzsd6736qa1q.m.pipedream.net"
+
+    data = {
+        "manifesto_id": manifesto_id
+    }
+    response = requests.post(url, json=data)
+    if response.status_code == 200:
+        return f"Manifesto {manifesto_id} enviado com sucesso."
+    else:
+        raise Exception(f"Erro ao enviar manifesto {manifesto_id}: {response.text}")
+    
+
+
 @shared_task
 def processar_manifesto(id):
     try:
@@ -12,7 +31,7 @@ def processar_manifesto(id):
         dados = payload.get("dados", {})
 
         with transaction.atomic():
-            manifesto, created = Manifesto.objects.get_or_create(
+            manifesto, created = Manifesto.objects.update_or_create(
                 manifesto_numero=dados.get("manifesto_numero"),
                 defaults={
                     "manifesto_id": dados.get("manifesto_id"),
@@ -50,7 +69,7 @@ def processar_manifesto(id):
             # Modelos
             # --------------------
             for m in dados.get("manifesto_modelo", []):
-                ManifestoModelo.objects.create(
+                ManifestoModelo.objects.update_or_create(
                     manifesto=manifesto,
                     tipo=m.get("tipo"),
                     qtd=m.get("qtd")
@@ -61,7 +80,7 @@ def processar_manifesto(id):
             # --------------------
             for d in dados.get("descarregamento_dados", []):
                 dt = d.get("data_hora_descarregamento")
-                Descarregamento.objects.create(
+                Descarregamento.objects.update_or_create(
                     manifesto=manifesto,
                     local=d.get("local"),
                     data_hora=dt,
@@ -75,7 +94,7 @@ def processar_manifesto(id):
             # Minutas
             # --------------------
             for m in dados.get("minutas", []):
-                Minuta.objects.create(
+                Minuta.objects.update_or_create(
                     manifesto=manifesto,
                     minuta_id=m.get("minuta_id"),
                     minuta_numero=m.get("minuta_numero"),
@@ -86,7 +105,7 @@ def processar_manifesto(id):
             # Resumo por natureza
             # --------------------
             for r in dados.get("resumo_por_natureza", []):
-                ResumoNatureza.objects.create(
+                ResumoNatureza.objects.update_or_create(
                     manifesto=manifesto,
                     natureza=r.get("natureza"),
                     qtd=r.get("qtd")
@@ -96,10 +115,12 @@ def processar_manifesto(id):
             raw.processado = True
             raw.processado_em = datetime.now()
             raw.save()
-
+            enviar_manifesto(manifesto.manifesto_id)
         return f"Manifesto {manifesto.manifesto_numero} processado com sucesso."
-
+        
     except Exception as e:
         raw.erro = str(e)
         raw.save()
         raise
+
+
