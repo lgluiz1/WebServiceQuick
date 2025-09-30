@@ -284,19 +284,31 @@ class ReceberWebhookManifestoAPIView(APIView):
                 },
                 request_only=True,
             ),
-        ],
+        ]  # mantive seus exemplos
     )
     def post(self, request, *args, **kwargs):
         serializer = ManifestoWebhookSerializer(data=request.data)
         if serializer.is_valid():
             try:
-                manifesto = ManifestoWebhook.objects.update_or_create( 
+                manifesto, created = ManifestoWebhook.objects.update_or_create(
                     manifesto_numero=request.data.get("manifesto_numero"),
-                    payload=request.data,
+                    defaults={
+                        "payload": request.data,
+                        "processado": False,
+                        "processado_em": None,
+                        "erro": None,
+                    },
                 )
-                processar_manifesto.delay(manifesto.id)  # envia para fila Celery
+
+                # dispara task Celery
+                processar_manifesto.delay(manifesto.id)
+
                 return Response(
-                    {"message": "Webhook recebido com sucesso!", "id": manifesto.id},
+                    {
+                        "message": "Webhook recebido com sucesso!",
+                        "id": manifesto.id,
+                        "created": created,
+                    },
                     status=200,
                 )
             except Exception as e:
