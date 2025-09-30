@@ -2,6 +2,7 @@ from celery import shared_task
 from django.db import transaction
 from .models import ManifestoWebhook
 from manifesto.models import Manifesto, ManifestoModelo, Descarregamento, Minuta, ResumoNatureza
+from filial.models import Filial
 from datetime import datetime
 
 
@@ -110,6 +111,23 @@ def processar_manifesto(id):
                     natureza=r.get("natureza"),
                     qtd=r.get("qtd")
                 )
+
+            # --------------------
+            # Filiais (origem e destino)
+            # --------------------
+            for f in dados.get("filial_emissao", []):
+                Filial.objects.update_or_create(
+                    documento=f.get("documento"),
+                    defaults={
+                        "ie": f.get("ie"),
+                        "nome": f.get("nome"),
+                        "endereco": f.get("endereco"),
+                        "bairro": f.get("bairro"),
+                        "cidade": f.get("cidade"),
+                        "uf": f.get("uf"),
+                        "cep": f.get("cep"),
+                    }
+            )           
 
             # Marca como processado
             raw.processado = True
