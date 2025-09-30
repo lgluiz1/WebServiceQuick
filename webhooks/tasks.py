@@ -8,19 +8,26 @@ from filial.models import Filial
 from datetime import datetime
 
 
-@shared_task(bind=True, max_retries=3, default_retry_delay=60)
-def enviar_manifesto_task(self, webhook_id):
+@shared_task(bind=True, max_retries=3, default_retry_delay=60, rate_limit='1/m')
+def enviar_manifesto_task(self, manifesto_webhook_id):
+    """
+    Task para enviar manifesto via API externa com:
+    - máximo de 3 tentativas
+    - delay de 60s entre retries
+    - rate limit de 1 execução por minuto
+    """
     try:
-        raw = ManifestoWebhook.objects.get(id=webhook_id)
-    except ManifestoWebhook.DoesNotExist:
-        # Salva log ou erro, evita crash
-        return f"Webhook {webhook_id} não existe."
-
-    try:
-        import requests
+        raw = ManifestoWebhook.objects.get(id=manifesto_webhook_id)
+        
+        # Se já tiver processado com sucesso, não enviar de novo
+        if raw.processado:
+            return f"Manifesto {raw.manifesto_numero} já processado."
+        
         url = "https://eo3fzsd6736qa1q.m.pipedream.net"
-        response = requests.post(url, json={"manifesto_id": raw.manifesto_numero})
-
+        data = {"manifesto_id": raw.payload.get("dados", {}).get("manifesto_id")}
+        
+        response = requests.post(url, json=data)
+        
         if response.status_code == 200:
             raw.processado = True
             raw.processado_em = datetime.now()
@@ -28,18 +35,24 @@ def enviar_manifesto_task(self, webhook_id):
             raw.save()
             return f"Manifesto {raw.manifesto_numero} enviado com sucesso."
         else:
-            raw.erro = f"Falha no envio: {response.status_code} - {response.text}"
-            raw.save()
-            raise Exception(raw.erro)
-
+            # Caso a resposta não seja 200, incrementa tentativas e tenta novamente
+            raise Exception(f"Erro ao enviar: {response.status_code} - {response.text}")
+    
     except Exception as e:
-        # Retenta a task ou registra erro definitivo
-        try:
-            self.retry(exc=e)
-        except MaxRetriesExceededError:
-            raw.erro = f"Limite de tentativas excedido: {str(e)}"
-            raw.save()
-            raise
+        # Incrementa tentativas no banco
+        if hasattr(raw, 'tentativas_envio'):
+            raw.tentativas_envio += 1
+        else:
+            raw.tentativas_envio = 1
+        raw.erro = str(e)
+        raw.save()
+        
+        # Se ainda não excedeu max_retries, agenda retry com delay
+        if raw.tentativas_envio < self.max_retries:
+            raise self.retry(exc=e, countdown=self.default_retry_delay)
+        
+        # Se excedeu tentativas, apenas registra o erro
+        return f"Falha ao enviar manifesto {raw.manifesto_numero}: {e}"
 
 
 @shared_task
