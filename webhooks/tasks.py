@@ -8,33 +8,35 @@ from filial.models import Filial
 from datetime import datetime
 
 
-@shared_task(bind=True, autoretry_for=(Exception,), retry_kwargs={'max_retries': 3, 'countdown': 60})
-def enviar_manifesto_task(self, manifesto_id):
+@shared_task(bind=True, max_retries=3, default_retry_delay=60)
+def enviar_manifesto_task(self, webhook_id):
     try:
-        raw = ManifestoWebhook.objects.get(manifesto_numero=manifesto_id)
+        raw = ManifestoWebhook.objects.get(id=webhook_id)
+    except ManifestoWebhook.DoesNotExist:
+        # Salva log ou erro, evita crash
+        return f"Webhook {webhook_id} não existe."
 
+    try:
+        import requests
         url = "https://eo3fzsd6736qa1q.m.pipedream.net"
-        data = {"manifesto_id": manifesto_id}
-
-        response = requests.post(url, json=data)
+        response = requests.post(url, json={"manifesto_id": raw.manifesto_numero})
 
         if response.status_code == 200:
             raw.processado = True
             raw.processado_em = datetime.now()
             raw.erro = None
             raw.save()
-            return f"Manifesto {manifesto_id} enviado com sucesso."
+            return f"Manifesto {raw.manifesto_numero} enviado com sucesso."
         else:
             raw.erro = f"Falha no envio: {response.status_code} - {response.text}"
             raw.save()
             raise Exception(raw.erro)
 
     except Exception as e:
-        # Se exceder o limite de retries, registra erro final
+        # Retenta a task ou registra erro definitivo
         try:
             self.retry(exc=e)
         except MaxRetriesExceededError:
-            raw = ManifestoWebhook.objects.get(manifesto_numero=manifesto_id)
             raw.erro = f"Limite de tentativas excedido: {str(e)}"
             raw.save()
             raise
@@ -166,7 +168,7 @@ def processar_manifesto(id):
             raw.processado_em = datetime.now()
             raw.save()
 
-            enviar_manifesto_task(manifesto.manifesto_id)
+            enviar_manifesto_task.delay(raw.id)
 
         return f"Manifesto {manifesto.manifesto_numero} processado com sucesso."
 
