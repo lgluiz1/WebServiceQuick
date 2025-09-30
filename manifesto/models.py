@@ -36,9 +36,10 @@ class Manifesto(models.Model):
     previsao_entrega = models.DateField()
     observacoes_operacionais = models.TextField(blank=True)
     criado_em = models.DateTimeField(auto_now_add=True)
+    atualizado_em = models.DateTimeField(auto_now=True) # Atualiza sempre que o registro é salvo
 
     def __str__(self):
-        return f"Manifesto {self.manifesto_numero}"
+        return f"Manifesto {self.manifesto_numero} - {self.atualizado_em.strftime('%d/%m/%Y %H:%M')}"
 
 
 # -----------------------
@@ -48,6 +49,10 @@ class ManifestoModelo(models.Model):
     manifesto = models.ForeignKey(Manifesto, related_name="modelos", on_delete=models.CASCADE)
     tipo = models.CharField(max_length=50)
     qtd = models.IntegerField()
+    atualizado_em = models.DateTimeField(auto_now=True) # Atualiza sempre que o registro é salvo
+
+    def __str__(self):
+        return f"{self.manifesto.manifesto_numero} - {self.tipo} - {self.atualizado_em.strftime('%d/%m/%Y %H:%M')}"
 
 
 # -----------------------
@@ -61,6 +66,10 @@ class Descarregamento(models.Model):
     peso_total = models.FloatField()
     qtd_notas = models.IntegerField()
     valor_total = models.FloatField()
+    atualizado_em = models.DateTimeField(auto_now=True) # Atualiza sempre que o registro é salvo
+
+    def __str__(self):
+        return f"{self.manifesto.manifesto_numero} - {self.local} - {self.atualizado_em.strftime('%d/%m/%Y %H:%M')}"
 
 
 # -----------------------
@@ -71,6 +80,9 @@ class Minuta(models.Model):
     minuta_id = models.CharField(max_length=50)
     minuta_numero = models.CharField(max_length=50)
     data_emissao = models.DateField()
+    atualizado_em = models.DateTimeField(auto_now=True) # Atualiza sempre que o registro é salvo
+    def __str__(self):
+        return f"{self.manifesto.manifesto_numero} - {self.minuta_numero} - {self.atualizado_em.strftime('%d/%m/%Y %H:%M')}"
 
 
 # -----------------------
@@ -80,3 +92,6 @@ class ResumoNatureza(models.Model):
     manifesto = models.ForeignKey(Manifesto, related_name="resumo_naturezas", on_delete=models.CASCADE)
     natureza = models.CharField(max_length=255)
     qtd = models.IntegerField()
+    atualizado_em = models.DateTimeField(auto_now=True) # Atualiza sempre que o registro é salvo
+    def __str__(self):
+        return f"{self.manifesto.manifesto_numero} - {self.natureza} - {self.atualizado_em.strftime('%d/%m/%Y %H:%M')}"
