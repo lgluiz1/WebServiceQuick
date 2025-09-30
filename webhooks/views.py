@@ -24,19 +24,19 @@ class ReceberWebhookAPIView(APIView):
                 "frete_id": "FRT12345",
                 "dados": {
                             "chave": 12345678901234567890123456789012345678901234,
-                            "numero": 000123,
+                            "numero": 123,
                             "serie": 1,
                             "status": [
                                 {
-                                    "codigo": 01,
+                                    "codigo": 1,
                                     "descricao": "Entregue"
                                 },
                                 {
-                                    "codigo": 02,
+                                    "codigo": 2,
                                     "descricao": "Cancelada"
                                 },
                                 {
-                                    "codigo": 03,
+                                    "codigo": 3,
                                     "descricao": "Em trânsito"
                                 },
                             ],
@@ -88,12 +88,12 @@ class ReceberWebhookAPIView(APIView):
                             "notas_fiscais": [
                                 {
                                     "chave": "12345678901234567890123456789012345678901234",
-                                    "numero": 000123,
+                                    "numero": 123,
                                     "serie": 1,
                                 },
                                 {
                                     "chave": "12345678901234567890123456789012345678901234",
-                                    "numero": 000456,
+                                    "numero": 456,
                                     "serie": 2,
                                 },
                             ],
@@ -257,7 +257,7 @@ class ReceberWebhookManifestoAPIView(APIView):
                                 "data_emissao_cte": "2025-08-20",
                             },
                         ],
-                        "filial: [
+                        "filial_emissao": [
                             {
                                 "documento": 12345678901234,
                                 "ie": 123456789,
