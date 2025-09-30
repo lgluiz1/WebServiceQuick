@@ -116,18 +116,17 @@ def processar_manifesto(id):
             # Filiais (origem e destino)
             # --------------------
             for f in dados.get("filial_emissao", []):
-                Filial.objects.update_or_create(
-                    documento=f.get("documento"),
-                    defaults={
-                        "ie": f.get("ie"),
-                        "nome": f.get("nome"),
-                        "endereco": f.get("endereco"),
-                        "bairro": f.get("bairro"),
-                        "cidade": f.get("cidade"),
-                        "uf": f.get("uf"),
-                        "cep": f.get("cep"),
-                    }
-            )           
+                filial, _ = Filial.objects.get_or_create(
+                    documento=f.get("documento")
+                )
+                filial.ie = f.get("ie")
+                filial.nome = f.get("nome")
+                filial.endereco = f.get("endereco")
+                filial.bairro = f.get("bairro")
+                filial.cidade = f.get("cidade")
+                filial.uf = f.get("uf")
+                filial.cep = f.get("cep")
+                filial.save()
 
             # Marca como processado
             raw.processado = True
