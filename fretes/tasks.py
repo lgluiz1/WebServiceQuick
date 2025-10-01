@@ -4,7 +4,10 @@ from filial.models import Filial
 from fretes.models import Frete
 from notafiscal.models import NotaFiscal
 from webhooks.models import FretesWebhook
-from datetime import datetime
+from django.utils import timezone
+import logging
+
+logger = logging.getLogger(__name__)
 
 def get_or_create_filial(data):
     """Verifica se a filial já existe, senão cria"""
@@ -26,15 +29,20 @@ def get_or_create_filial(data):
 @shared_task(bind=True, max_retries=3, default_retry_delay=60)
 def processar_frete_task(self, json_data):
     try:
-        # Se vier no formato antigo (com 'dados'), use ele
-        dados = json_data.get("dados", json_data)  
+        # Suporte para json com ou sem "dados"
+        dados = json_data.get("dados", json_data)
         frete_id = json_data.get("frete_id", dados.get("frete_id"))
 
-        # Resto do processamento...
         # Filiais
         filial_emissao = get_or_create_filial(dados["filial_emissao"][0])
         origem = get_or_create_filial(dados["origem"][0])
         destino = get_or_create_filial(dados["destino"][0])
+
+        # Status
+        if isinstance(dados["status"], list):
+            status_codigo = dados["status"][0]["codigo"]
+        else:
+            status_codigo = dados["status"]
 
         # Frete
         frete, created = Frete.objects.update_or_create(
@@ -43,7 +51,7 @@ def processar_frete_task(self, json_data):
                 "chave": dados["chave"],
                 "numero": dados["numero"],
                 "serie": dados["serie"],
-                "status": dados["status"][0]["codigo"] if isinstance(dados["status"], list) else dados["status"],
+                "status": status_codigo,
                 "filial_emissao": filial_emissao,
                 "origem": origem,
                 "destino": destino,
@@ -72,15 +80,27 @@ def processar_frete_task(self, json_data):
                 }
             )
 
-        # Atualiza webhook
+        # Atualiza webhook como processado
         if "frete_id" in json_data:
             FretesWebhook.objects.filter(frete_id=frete.frete_id).update(
                 processado=True,
-                processado_em=datetime.now(),
+                processado_em=timezone.now(),
                 erro=None,
             )
 
         return f"Frete {frete.frete_id} processado com sucesso."
 
     except Exception as exc:
+        # Loga o erro
+        logger.exception(f"Erro ao processar frete {json_data.get('frete_id')}")
+
+        # Atualiza webhook com o erro
+        if "frete_id" in json_data:
+            FretesWebhook.objects.filter(frete_id=json_data.get("frete_id")).update(
+                processado=False,
+                processado_em=timezone.now(),
+                erro=str(exc),
+            )
+
+        # Retenta a task
         raise self.retry(exc=exc, countdown=60)
