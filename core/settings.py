@@ -220,7 +220,7 @@ EMAIL_HOST_PASSWORD = "nltb ondt ctza nghe"  # senha de app
 DEFAULT_FROM_EMAIL = "naorespondertest@gmail.com"
 
 # URL do seu site (opcional para links)
-SITE_URL = "http://localhost:8000"
+SITE_URL = "https://terrilyn-postsurgical-stammeringly.ngrok-free.dev"
 
 CELERY_BROKER_URL = os.getenv("CELERY_BROKER_URL")
 CELERY_RESULT_BACKEND = os.getenv("CELERY_RESULT_BACKEND")
