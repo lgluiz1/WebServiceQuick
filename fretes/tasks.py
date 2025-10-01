@@ -25,13 +25,12 @@ def get_or_create_filial(data):
 
 @shared_task(bind=True, max_retries=3, default_retry_delay=60)
 def processar_frete_task(self, json_data):
-    """
-    Task para processar o frete e salvar notas fiscais.
-    - json_data: dicionário contendo os dados do frete.
-    """
     try:
-        dados = json_data["dados"]
+        # Se vier no formato antigo (com 'dados'), use ele
+        dados = json_data.get("dados", json_data)  
+        frete_id = json_data.get("frete_id", dados.get("frete_id"))
 
+        # Resto do processamento...
         # Filiais
         filial_emissao = get_or_create_filial(dados["filial_emissao"][0])
         origem = get_or_create_filial(dados["origem"][0])
@@ -39,12 +38,12 @@ def processar_frete_task(self, json_data):
 
         # Frete
         frete, created = Frete.objects.update_or_create(
-            frete_id=json_data["frete_id"],
+            frete_id=frete_id,
             defaults={
                 "chave": dados["chave"],
                 "numero": dados["numero"],
                 "serie": dados["serie"],
-                "status": dados["status"]["codigo"],
+                "status": dados["status"][0]["codigo"] if isinstance(dados["status"], list) else dados["status"],
                 "filial_emissao": filial_emissao,
                 "origem": origem,
                 "destino": destino,
@@ -73,15 +72,15 @@ def processar_frete_task(self, json_data):
                 }
             )
 
-        # Atualiza o webhook como processado e registra erro se houver
-        FretesWebhook.objects.filter(frete_id=frete.frete_id).update(
-            processado=True,
-            processado_em = datetime.now(),
-            erro=None,
-        )
+        # Atualiza webhook
+        if "frete_id" in json_data:
+            FretesWebhook.objects.filter(frete_id=frete.frete_id).update(
+                processado=True,
+                processado_em=datetime.now(),
+                erro=None,
+            )
 
         return f"Frete {frete.frete_id} processado com sucesso."
 
     except Exception as exc:
-        # Tenta reprocessar em caso de erro
-        raise self.retry(exc=exc, max_retries=3, countdown=60)
+        raise self.retry(exc=exc, countdown=60)
