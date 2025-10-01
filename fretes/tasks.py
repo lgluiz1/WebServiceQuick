@@ -39,9 +39,11 @@ def processar_frete_task(self, json_data):
         destino = get_or_create_filial(dados["destino"][0])
 
         # Status
-        if isinstance(dados["status"], list):
-            status_codigo = dados["status"][0]["codigo"]
+        # Se status vier como dicionário
+        if isinstance(dados["status"], dict):
+            status_codigo = dados["status"]["codigo"]
         else:
+            # fallback caso venha como número direto
             status_codigo = dados["status"]
 
         # Frete
