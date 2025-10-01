@@ -111,9 +111,9 @@ class ReceberWebhookAPIView(APIView):
             payload = data.get("dados", data)  # se "dados" existir, use, senão salva tudo
             webhook, created = FretesWebhook.objects.update_or_create(
                 frete_id=frete_id,
-                processado=False,
-                erro=None,
                 defaults={
+                    "processado": False,
+                    "erro": None,
                     "recebido_em": timezone.now(),
                     "payload": payload
                 }

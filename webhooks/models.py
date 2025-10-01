@@ -2,7 +2,7 @@
 from django.db import models
 
 class FretesWebhook(models.Model): 
-    frete_id = models.CharField(max_length=255)  # id da NFE ou frete
+    frete_id = models.CharField(max_length=255, unique=True)  # id da NFE ou frete
     recebido_em = models.DateTimeField(auto_now_add=True)
     processado = models.BooleanField(default=False)
     erro = models.TextField(blank=True, null=True)
