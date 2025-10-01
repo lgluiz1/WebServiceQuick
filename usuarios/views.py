@@ -23,7 +23,8 @@ def ativar_conta(request, token):
                 is_active=True
             )
 
-            # opcional: vincular user.id ao seu Usuario
+            # vincula ao cadastro e remove o token
+            usuario.user = user
             usuario.token_ativacao = None
             usuario.save()
 
