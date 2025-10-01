@@ -26,6 +26,7 @@ def get_or_create_filial(data):
     )
     return filial
 
+
 @shared_task(bind=True, max_retries=3, default_retry_delay=60)
 def processar_frete_task(self, webhook_id):
     from webhooks.models import FretesWebhook
@@ -36,7 +37,10 @@ def processar_frete_task(self, webhook_id):
         webhook = FretesWebhook.objects.get(id=webhook_id)
         json_data = webhook.payload
         dados = json_data.get("dados", json_data)
-        frete_id = json_data.get("frete_id", dados.get("frete_id"))
+
+        frete_id = json_data.get("frete_id")
+        if not frete_id:
+            raise ValueError("Frete ID não encontrado no payload!")
 
         # Filiais
         filial_emissao = get_or_create_filial(dados["filial_emissao"][0])
@@ -102,4 +106,3 @@ def processar_frete_task(self, webhook_id):
         )
 
         raise self.retry(exc=exc, countdown=60)
-
