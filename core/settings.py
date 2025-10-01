@@ -64,7 +64,6 @@ INSTALLED_APPS = [
 
     'usuarios.apps.UsuariosConfig',
     # Nossos apps
-    'usuarios',
     'integracoes',
     'webhooks',
     'webponto',
