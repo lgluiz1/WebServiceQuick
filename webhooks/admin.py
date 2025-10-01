@@ -1,7 +1,11 @@
 from django.contrib import admin
 from .models import FretesWebhook, NfeWebhook, ManifestoWebhook
 
-admin.site.register(FretesWebhook)
+@admin.register(FretesWebhook)
+class FretesWebhookAdmin(admin.ModelAdmin):
+    list_display = ('frete_id', 'recebido_em', 'processado', 'erro')
+    list_filter = ('processado', 'recebido_em')
+    search_fields = ('frete_id',)
 @admin.register(ManifestoWebhook)
 class ManifestoWebhookAdmin(admin.ModelAdmin):
     list_display = ('manifesto_numero', 'recebido_em', 'processado', 'processado_em', 'erro')

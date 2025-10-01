@@ -235,11 +235,7 @@ class ReceberWebhookManifestoAPIView(APIView):
                                 "minuta_numero": 555666,
                                 "minuta_data_emissao": "2025-08-22",
                             },
-                            {
-                                "minuta_id": "MIN67890",
-                                "minuta_numero": 777888,
-                                "minuta_data_emissao": "2025-08-24",
-                            },
+                            
                         ],
                         "ctes": [
                             {
@@ -249,13 +245,7 @@ class ReceberWebhookManifestoAPIView(APIView):
                                 "cte_key": "12345678901234567890123456789012345678901234",
                                 "data_emissao_cte": "2025-08-21",
                             },
-                            {
-                                "cte_id": "CTE67890",
-                                "minuta_id": "MIN67890",
-                                "cte_numero": 123456789,
-                                "cte_key": "43210987654321098765432109876543210987654321",
-                                "data_emissao_cte": "2025-08-20",
-                            },
+                            
                         ],
                         "filial_emissao": [
                             {
