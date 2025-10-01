@@ -1,0 +1,7 @@
+<h2>Defina sua senha para ativar a conta</h2>
+<form method="post">
+    {% csrf_token %}
+    <label>Nova senha:</label>
+    <input type="password" name="senha" required>
+    <button type="submit">Ativar conta</button>
+</form>
