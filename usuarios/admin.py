@@ -5,4 +5,4 @@ from .models import Usuario
 class UsuarioAdmin(admin.ModelAdmin):
     list_display = ('email', 'nome', 'tipo_perfil', 'telefone', 'cpf', 'filial' )
     search_fields = ('email', 'nome', 'cpf', 'telefone')
-    list_filter = ('perfil', 'filial')
+    list_filter = ('tipo_perfil', 'filial')
