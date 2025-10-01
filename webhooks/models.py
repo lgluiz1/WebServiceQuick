@@ -7,6 +7,7 @@ class FretesWebhook(models.Model):
     processado = models.BooleanField(default=False)
     erro = models.TextField(blank=True, null=True)
     payload = models.JSONField()  # corpo cru da requisição
+    processado_em = models.DateTimeField(blank=True, null=True)
 
     def __str__(self):
         return f"{self.frete_id} - {self.recebido_em.strftime('%d/%m/%Y %H:%M')} - {'Processado' if self.processado else 'Não processado'}"
@@ -23,6 +24,7 @@ class NfeWebhook(models.Model):
     processado = models.BooleanField(default=False)
     erro = models.TextField(blank=True, null=True)
     payload = models.JSONField()
+    processado_em = models.DateTimeField(blank=True, null=True)
 
     def __str__(self):
         return f"{self.numero_nfe} - {self.recebido_em.strftime('%d/%m/%Y %H:%M')} - {'Processado' if self.processado else ' Não processado'}"

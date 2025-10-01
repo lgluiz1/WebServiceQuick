@@ -3,6 +3,8 @@ from celery import shared_task
 from filial.models import Filial
 from fretes.models import Frete
 from notafiscal.models import NotaFiscal
+from webhooks.models import FretesWebhook
+from datetime import datetime
 
 def get_or_create_filial(data):
     """Verifica se a filial já existe, senão cria"""
@@ -22,7 +24,7 @@ def get_or_create_filial(data):
     return filial
 
 @shared_task(bind=True, max_retries=3, default_retry_delay=60)
-def processar_frete_task(self, json_data):
+def processar_frete_task(json_data):
     """
     Task para processar o frete e salvar notas fiscais.
     - json_data: dicionário contendo os dados do frete.
@@ -70,6 +72,13 @@ def processar_frete_task(self, json_data):
                     "serie": nf["serie"],
                 }
             )
+
+        # Atualiza o webhook como processado e registra erro se houver
+        FretesWebhook.objects.filter(frete_id=frete.frete_id).update(
+            processado=True,
+            processado_em = datetime.now()
+            erro=None,
+        )
 
         return f"Frete {frete.frete_id} processado com sucesso."
 

@@ -5,6 +5,7 @@ from django.dispatch import receiver
 @receiver(post_save)
 def enviar_frete_para_processamento(sender, instance, created, **kwargs):
     from fretes.models import Frete  # import local
+    from notafiscal.models import NotaFiscal
     if not isinstance(instance, Frete):
         return  # garante que só dispara para Frete
 
@@ -67,7 +68,7 @@ def enviar_frete_para_processamento(sender, instance, created, **kwargs):
                     "chave": nf.chave,
                     "numero": nf.numero,
                     "serie": nf.serie,
-                } for nf in instance.notafiscal_set.all()
+                } for nf in NotaFiscal.objects.filter(frete=instance)
             ]
         }
     }

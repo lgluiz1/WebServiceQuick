@@ -3,7 +3,7 @@ from .models import FretesWebhook, NfeWebhook, ManifestoWebhook
 
 @admin.register(FretesWebhook)
 class FretesWebhookAdmin(admin.ModelAdmin):
-    list_display = ('frete_id', 'recebido_em', 'processado', 'erro')
+    list_display = ('frete_id', 'recebido_em', 'processado', 'processado_em', 'erro')
     list_filter = ('processado', 'recebido_em')
     search_fields = ('frete_id',)
 @admin.register(ManifestoWebhook)
@@ -13,7 +13,7 @@ class ManifestoWebhookAdmin(admin.ModelAdmin):
     search_fields = ('manifesto_numero',)
 @admin.register(NfeWebhook)
 class NfeWebhookAdmin(admin.ModelAdmin):
-    list_display = ('numero_nfe', 'recebido_em', 'processado', 'erro')
+    list_display = ('numero_nfe', 'recebido_em', 'processado', 'processado_em', 'erro')
     list_filter = ('processado', 'recebido_em')
     search_fields = ('numero_nfe',)
 

@@ -91,11 +91,7 @@ class ReceberWebhookAPIView(APIView):
                                     "numero": 123,
                                     "serie": 1,
                                 },
-                                {
-                                    "chave": "12345678901234567890123456789012345678901234",
-                                    "numero": 456,
-                                    "serie": 2,
-                                },
+                             
                             ],
                             "observacoes": "Entrega via transportadora X",
                             "url_comprovante": "https://quickdelivery.com/comprovante/000123.pdf"
@@ -122,6 +118,9 @@ class ReceberWebhookAPIView(APIView):
                     "payload": payload
                 }
             )
+            # dispara task Celery
+            from fretes.tasks import processar_frete_task
+            processar_frete_task.delay(webhook.payload)
             return Response({
                 "status": "ok",
                 "frete_id": webhook.frete_id,
