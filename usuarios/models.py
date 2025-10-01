@@ -1,4 +1,5 @@
 from django.utils.crypto import get_random_string
+from django.contrib.auth.models import User
 from django.db import models
 from filial.models import Filial
 
@@ -69,6 +70,14 @@ class Usuario(models.Model):
     nome_pai = models.CharField(max_length=100, blank=True, null=True)
     nome_mae = models.CharField(max_length=100, blank=True, null=True)
     token_ativacao = models.CharField(max_length=64, blank=True, null=True, unique=True)
+    # Novo campo para vincular ao User
+    user = models.OneToOneField(
+        User,
+        on_delete=models.SET_NULL,  # ou CASCADE se quiser deletar Usuario junto com User
+        blank=True,
+        null=True,
+        related_name="perfil_usuario"
+    )
 
     def gerar_token_ativacao(self):
         self.token_ativacao = get_random_string(48)
