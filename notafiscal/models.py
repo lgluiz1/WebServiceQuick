@@ -1,8 +1,8 @@
 from django.db import models
-from fretes.models import Fretes
+from fretes.models import Frete
 
 class NotaFiscal(models.Model):
-    frete = models.ForeignKey(Fretes, on_delete=models.CASCADE, related_name="notas_fiscais")
+    frete = models.ForeignKey(Frete, on_delete=models.CASCADE, related_name="notas_fiscais",blank=True, null=True)
     chave = models.CharField(max_length=44, unique=True)
     status = models.CharField(max_length=20, blank=True, null=True)
     numero = models.IntegerField( blank=True, null=True)

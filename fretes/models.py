@@ -1,55 +1,34 @@
 from django.db import models
+from filial.models import Filial
 
+class Frete(models.Model):
+    frete_id = models.CharField(max_length=50, unique=True)
+    chave = models.CharField(max_length=44,blank=True, null=True)
+    numero = models.IntegerField(blank=True, null=True)
+    serie = models.IntegerField(blank=True, null=True)
+    
+    STATUS_CHOICES = [
+        (1, "Entregue"),
+        (2, "Cancelada"),
+        (3, "Em trânsito"),
+    ]
+    status = models.IntegerField(choices=STATUS_CHOICES)
 
-class Fretes(models.Model):
-    frete_id = models.CharField(max_length=20, unique=True)  # aumentei p/ segurança
-    recebido_em = models.DateTimeField(auto_now_add=True)
+    filial_emissao = models.ForeignKey(Filial, on_delete=models.CASCADE, related_name="fretes_emitidos",blank=True, null=True)
+    origem = models.ForeignKey(Filial, on_delete=models.CASCADE, related_name="fretes_origem",blank=True, null=True)
+    destino = models.ForeignKey(Filial, on_delete=models.CASCADE, related_name="fretes_destino",blank=True, null=True)
 
-    tipo_frete = models.CharField(max_length=20, blank=True, null=True)
-    previsao_entrega = models.CharField(max_length=20, blank=True, null=True)
+    data_emissao = models.DateTimeField(blank=True, null=True)
+    data_saida_entrada = models.DateTimeField(blank=True, null=True)
+    tipo_operacao = models.CharField(max_length=50)
+    modelo_frete = models.CharField(max_length=50,blank=True, null=True)
+    valor_total_produtos = models.DecimalField(max_digits=12, decimal_places=2,blank=True, null=True)
+    tipo_servico = models.CharField(max_length=50,blank=True, null=True)
+    tipo_emissao = models.CharField(max_length=100,blank=True, null=True)
+    valor_total_nota = models.DecimalField(max_digits=12, decimal_places=2,blank=True, null=True)
+    peso_total_nota = models.DecimalField(max_digits=10, decimal_places=2,blank=True, null=True)
     observacoes = models.TextField(blank=True, null=True)
+    url_comprovante = models.URLField(blank=True, null=True)
 
-    agente_entrega = models.CharField(max_length=100, blank=True, null=True)
-
-    numero_nfe = models.CharField(max_length=20, blank=True, null=True)
-    serie_nfe = models.CharField(max_length=10, blank=True, null=True)
-    chave_nfe = models.TextField(blank=True, null=True)  # era 255
-
-    data_emissao_nfe = models.CharField(max_length=20, blank=True, null=True)
-    id_nfe = models.CharField(max_length=20, blank=True, null=True)
-
-    cte_id = models.CharField(max_length=20, blank=True, null=True)
-    cte_numero = models.CharField(max_length=20, blank=True, null=True)
-    cte_key = models.TextField(blank=True, null=True)  # era 255
-    data_emissao_cte = models.CharField(max_length=20, blank=True, null=True)
-
-    minuta_id = models.CharField(max_length=20, blank=True, null=True)
-    minuta_numero = models.CharField(max_length=20, blank=True, null=True)
-    minuta_data_emissao = models.CharField(max_length=20, blank=True, null=True)
-
-    doc_remetente = models.CharField(max_length=20, blank=True, null=True)
-    nome_remetente = models.CharField(max_length=100, blank=True, null=True)
-
-    doc_destinatario = models.CharField(max_length=20, blank=True, null=True)
-    nome_destinatario = models.CharField(max_length=100, blank=True, null=True)
-
-    cidade_destino = models.CharField(max_length=100, blank=True, null=True)
-    uf_destino = models.CharField(max_length=5, blank=True, null=True)
-    cep_destino = models.CharField(max_length=15, blank=True, null=True)
-
-    endereco_destino = models.CharField(max_length=255, blank=True, null=True)
-    bairro_destino = models.CharField(max_length=100, blank=True, null=True)
-    tel_destinatario = models.CharField(max_length=20, blank=True, null=True)
-    email_destinatario = models.CharField(max_length=100, blank=True, null=True)
-
-    manifesto_id = models.CharField(max_length=20, blank=True, null=True)
-    manifesto_numero = models.CharField(max_length=20, blank=True, null=True)
-    manifesto_data_emissao = models.CharField(max_length=20, blank=True, null=True)
-
-    motorista = models.CharField(max_length=100, blank=True, null=True)
-    doc_motorista = models.CharField(max_length=20, blank=True, null=True)
-    veiculo_placa = models.CharField(max_length=10, blank=True, null=True)
-
-    class Meta:
-        verbose_name = "Frete"
-        verbose_name_plural = "Fretes"
+    def __str__(self):
+        return f"Frete {self.frete_id} - Status: {self.get_status_display()}"
