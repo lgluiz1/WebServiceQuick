@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
 
+
     # terceiros
     "rest_framework",
     "drf_spectacular",
@@ -69,6 +70,7 @@ INSTALLED_APPS = [
     "notafiscal",
     "manifesto",
     "filial",
+    "configuracao",
 ]
 
 REST_FRAMEWORK = {
