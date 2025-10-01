@@ -73,7 +73,7 @@ class Usuario(models.Model):
     # Novo campo para vincular ao User
     user = models.OneToOneField(
         User,
-        on_delete=models.SET_NULL,  # ou CASCADE se quiser deletar Usuario junto com User
+        on_delete=models.CASCADE,  # ou CASCADE se quiser deletar Usuario junto com User
         blank=True,
         null=True,
         related_name="perfil_usuario"
