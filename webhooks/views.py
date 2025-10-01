@@ -120,7 +120,7 @@ class ReceberWebhookAPIView(APIView):
             )
             # dispara task Celery
             from fretes.tasks import processar_frete_task
-            processar_frete_task.delay(webhook.payload)
+            processar_frete_task.delay(webhook.id)
             return Response({
                 "status": "ok",
                 "frete_id": webhook.frete_id,
