@@ -29,6 +29,7 @@ class Frete(models.Model):
     peso_total_nota = models.DecimalField(max_digits=10, decimal_places=2,blank=True, null=True)
     observacoes = models.TextField(blank=True, null=True)
     url_comprovante = models.URLField(blank=True, null=True)
+    atualizado_em = models.DateTimeField(auto_now=True ,blank=True, null=True) # Atualiza sempre que o registro é salvo
 
     def __str__(self):
         return f"Frete {self.frete_id} - Status: {self.get_status_display()}"

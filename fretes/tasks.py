@@ -76,7 +76,11 @@ def processar_frete_task(self, webhook_id):
                 "observacoes": dados.get("observacoes"),
                 "url_comprovante": dados.get("url_comprovante"),
             }
+            
         )
+        # adiciona atualizado_em
+        frete.atualizado_em = timezone.now()
+        frete.save()
 
         # Notas fiscais
         for nf in dados.get("notas_fiscais", []):
