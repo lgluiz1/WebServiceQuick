@@ -6,4 +6,4 @@ class UsuariosConfig(AppConfig):
     name = 'usuarios'
 
     def ready(self):
-        import usuarios.signals  # Importa os sinais para conectar os handlers
+        import usuarios.signals  # garante que os sinais sejam registrados
