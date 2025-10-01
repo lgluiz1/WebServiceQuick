@@ -34,6 +34,9 @@ urlpatterns = [
     path("api/notafiscal/", include("notafiscal.urls")),
     #path("api/integracoes/", include("integracoes.urls")),
 
+    # USUARIOS E AUTENTICAÇÃO
+    path("user/", include("usuarios.urls")),
+
 
 ]
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
