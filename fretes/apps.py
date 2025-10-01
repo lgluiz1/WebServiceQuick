@@ -1,9 +1,9 @@
+# fretes/apps.py
 from django.apps import AppConfig
 
-
 class FretesConfig(AppConfig):
-    default_auto_field = 'django.db.models.BigAutoField'
-    name = 'fretes'
+    default_auto_field = "django.db.models.BigAutoField"
+    name = "fretes"
 
     def ready(self):
-        import fretes.signals  # registra o signal automaticamente
+        import fretes.signals  # registra signals quando o app é carregado
