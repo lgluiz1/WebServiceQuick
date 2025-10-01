@@ -1,38 +1,23 @@
 from django.db import models
+from fretes.models import Fretes
 
 class NotaFiscal(models.Model):
-    chave = models.CharField(max_length=250,blank=True, null=True)
-    numero = models.CharField(max_length=20, unique=True)
-    serie = models.CharField(max_length=5, blank=True, null=True)
+    frete = models.ForeignKey(Fretes, on_delete=models.CASCADE, related_name="notas_fiscais")
+    chave = models.CharField(max_length=44, unique=True)
     status = models.CharField(max_length=20, blank=True, null=True)
-    data_emissao = models.DateTimeField()
-    data_saida_entrada = models.DateTimeField(blank=True, null=True)
-    tipo_operacao = models.CharField(max_length=20, blank=True, null=True)  # entrada / saída
-    valor_total_produtos = models.DecimalField(max_digits=12, decimal_places=2, blank=True, null=True)
-    valor_total_nota = models.DecimalField(max_digits=12, decimal_places=2, blank=True, null=True)
-    peso_total_nota = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
-    observacoes = models.TextField(blank=True, null=True)
-    nome_emitente = models.CharField(max_length=50,blank=True, null=True)
-    documento_emitente = models.CharField(max_length=15,blank=True, null=True)
-    nome_destinatario =  models.CharField(max_length=50,blank=True, null=True)
-    documento_destinatario = models.CharField(max_length=15,blank=True, null=True)
-    endereco_destinatario = models.CharField(max_length=100,blank=True, null=True)
-    bairro_destinatario = models.CharField(max_length=20,blank=True, null=True)
-    cidade_destinatario = models.CharField(max_length=20,blank=True, null=True)
-    uf_destinatario = models.CharField(max_length=2,blank=True, null=True)
-    cep_destinatario = models.CharField(max_length=10,blank=True, null=True)
-    telefone_destinatario = models.CharField(max_length=11,blank=True, null=True)
-    email_destinatario = models.EmailField(max_length=50,blank=True, null=True)
-    url_comprovante = models.URLField(blank=True, null=True)
+    numero = models.IntegerField( blank=True, null=True)
+    serie = models.IntegerField( blank=True, null=True)
+    comprovante_existe = models.BooleanField(default=False)
+    comprovante_url = models.URLField(max_length=500, blank=True, null=True)
+    data_entrega = models.DateField(blank=True, null=True)
+
+
+    def __str__(self):
+        return f"NFe {self.numero}/{self.serie} - {self.chave}"
 
     class Meta:
         verbose_name = 'Nota Fiscal'
         verbose_name_plural = 'Notas Fiscais'
-    
-
-    def __str__(self):
-        return f"NFe {self.numero} - {self.status} - {self.data_emissao.strftime('%d/%m/%Y')}"
-
 
 class IntegracaoSenac(models.Model):
     status = models.BooleanField(default=False)

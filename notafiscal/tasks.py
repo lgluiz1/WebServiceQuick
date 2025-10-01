@@ -82,6 +82,7 @@ def processar_notas_task():
 
 @shared_task
 def processar_notas_senac_task():
+    hoje_dia = datetime.now()
     nfe_webhooks = NfeWebhook.objects.filter(processado=False)
     novas_notas_fiscais = 0
     notas_repetidas = 0
@@ -130,7 +131,7 @@ def processar_notas_senac_task():
         nfe_webhook.processado = True
         nfe_webhook.save()
 
-    titulo_email = "Envio Feito para senac"
+    titulo_email = f"Processomento Notas Senac {hoje_dia.strftime('%d/%m/%Y')} "
     email_mensagem = f"✅ Processado {novas_notas_fiscais} notas fiscais. {notas_repetidas} notas fiscais repetidas."
     enviar_email(titulo_email, email_mensagem)
 
