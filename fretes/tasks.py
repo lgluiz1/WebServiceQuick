@@ -1,7 +1,7 @@
 # app/tasks.py
 from celery import shared_task
 from filial.models import Filial
-from .models import Frete
+from fretes.models import Frete
 from notafiscal.models import NotaFiscal
 
 def get_or_create_filial(data):
