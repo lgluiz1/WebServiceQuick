@@ -31,7 +31,7 @@ def processar_frete_task(self, webhook_id):
     from webhooks.models import FretesWebhook
     from notafiscal.models import NotaFiscal
     from fretes.models import Frete
-    
+
     try:
         webhook = FretesWebhook.objects.get(id=webhook_id)
         json_data = webhook.payload
@@ -44,10 +44,7 @@ def processar_frete_task(self, webhook_id):
         destino = get_or_create_filial(dados["destino"][0])
 
         # Status
-        if isinstance(dados["status"], list):
-            status_codigo = dados["status"][0]["codigo"]
-        else:
-            status_codigo = dados["status"]
+        status_codigo = dados["status"]["codigo"]
 
         # Frete
         frete, created = Frete.objects.update_or_create(
