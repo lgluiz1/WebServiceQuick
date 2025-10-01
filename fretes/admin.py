@@ -3,6 +3,7 @@ from .models import Fretes
 
 @admin.register(Fretes)
 class FretesAdmin(admin.ModelAdmin):
-    list_display = ('frete_id', 'descricao', 'valor', 'data_criacao', 'status')
-    list_filter = ('status', 'data_criacao')
-    search_fields = ('frete_id', 'descricao')
+    list_display = ('frete_id', 'recebido_em', 'processado', 'erro')
+    list_filter = ('status', 'recebido_em', 'processado')
+    search_fields = ('frete_id',)
+    
