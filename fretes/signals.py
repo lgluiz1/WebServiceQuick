@@ -1,11 +1,12 @@
 # fretes/signals.py
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from fretes.tasks import processar_frete_task  # importando a task
+
 
 @receiver(post_save, sender="fretes.Frete")
 def enviar_frete_para_processamento(sender, instance, created, **kwargs):
     from fretes.models import Frete  # import local para evitar circular import
+    from fretes.tasks import processar_frete_task
     
     """
     Dispara a task quando um Frete é criado ou atualizado.
